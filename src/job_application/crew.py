@@ -1,62 +1,117 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 
-# If you want to run a snippet of code before or after the crew starts, 
-# you can use the @before_kickoff and @after_kickoff decorators
-# https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
+from crewai_tools import CSVSearchTool, FileReadTool
 
 @CrewBase
 class JobApplication():
 	"""JobApplication crew"""
 
-	# Learn more about YAML configuration files here:
-	# Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
-	# Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
 	agents_config = 'config/agents.yaml'
 	tasks_config = 'config/tasks.yaml'
 
-	# If you would like to add tools to your agents, you can learn more about it here:
-	# https://docs.crewai.com/concepts/agents#agent-tools
+	# @agent
+	# def cv_reader(self) -> Agent:
+	# 		return Agent(
+	# 				config=self.agents_config['cv_reader'],
+	# 				tools=[FileReadTool()],
+	# 				verbose=True,
+	# 				allow_delegation=False
+	# 		)
+
+	# @agent
+	# def matcher(self) -> Agent:
+	# 		return Agent(
+	# 				config=self.agents_config['matcher'],
+	# 				tools=[FileReadTool(), CSVSearchTool()],
+	# 				verbose=True,
+	# 				allow_delegation=False
+	# 		)
+
+	# @task
+	# def read_cv_task(self) -> Task:
+	# 		return Task(
+	# 				config=self.tasks_config['read_cv_task'],
+	# 				agent=self.cv_reader()
+	# 		)
+
+	# @task
+	# def match_cv_task(self) -> Task:
+	# 		return Task(
+	# 				config=self.tasks_config['match_cv_task'],
+	# 				agent=self.matcher()
+	# 		)
+
+	# @crew
+	# def crew(self) -> Crew:
+	# 		"""Creates the MatchToProposal crew"""
+	# 		return Crew(
+	# 				agents=self.agents, # Automatically created by the @agent decorator
+	# 				tasks=self.tasks, # Automatically created by the @task decorator
+	# 				process=Process.sequential,
+	# 				verbose=2,
+	# 				# process=Process.hierarchical, # In case you want to use that instead https://docs.crewai.com/how-to/Hierarchical/
+	# 		)
+
 	@agent
-	def researcher(self) -> Agent:
+	def position_finder(self) -> Agent:
 		return Agent(
-			config=self.agents_config['researcher'],
+			config=self.agents_config['position_finder'],
 			verbose=True
 		)
 
 	@agent
-	def reporting_analyst(self) -> Agent:
+	def application_information_provider(self) -> Agent:
 		return Agent(
-			config=self.agents_config['reporting_analyst'],
+			config=self.agents_config['application_information_provider'],
 			verbose=True
 		)
 
-	# To learn more about structured task outputs, 
-	# task dependencies, and task callbacks, check out the documentation:
-	# https://docs.crewai.com/concepts/tasks#overview-of-a-task
-	@task
-	def research_task(self) -> Task:
-		return Task(
-			config=self.tasks_config['research_task'],
+	@agent
+	def cover_letter_generator(self) -> Agent:
+		return Agent(
+			config=self.agents_config['cover_letter_generator'],
+			verbose=True
+		)
+
+	@agent
+	def resume_generator(self) -> Agent:
+		return Agent(
+			config=self.agents_config['resume_generator'],
+			verbose=True
 		)
 
 	@task
-	def reporting_task(self) -> Task:
+	def find_positions(self) -> Task:
 		return Task(
-			config=self.tasks_config['reporting_task'],
-			output_file='report.md'
+			config=self.tasks_config['position_task'],
+		)
+
+	@task
+	def provide_application_information(self) -> Task:
+		return Task(
+			config=self.tasks_config['application_information_task'],
+		)
+
+	@task
+	def generate_cover_letter(self) -> Task:
+		return Task(
+			config=self.tasks_config['cover_letter_task'],
+		)
+
+	@task
+	def generate_resume(self) -> Task:
+		return Task(
+			config=self.tasks_config['resume_task'],
+			output_file='resume.pdf'
 		)
 
 	@crew
 	def crew(self) -> Crew:
 		"""Creates the JobApplication crew"""
-		# To learn how to add knowledge sources to your crew, check out the documentation:
-		# https://docs.crewai.com/concepts/knowledge#what-is-knowledge
-
 		return Crew(
-			agents=self.agents, # Automatically created by the @agent decorator
-			tasks=self.tasks, # Automatically created by the @task decorator
+			agents=self.agents,  # Automatically created by the @agent decorator
+			tasks=self.tasks,  # Automatically created by the @task decorator
 			process=Process.sequential,
 			verbose=True,
-			# process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
 		)

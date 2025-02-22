@@ -1,17 +1,67 @@
-research_task:
-  description: >
-    Conduct a thorough research about {topic}
-    Make sure you find any interesting and relevant information given
-    the current year is {current_year}.
-  expected_output: >
-    A list with 10 bullet points of the most relevant information about {topic}
-  agent: researcher
+# read_cv_task:
+#   description: >
+#     Extract relevant information from the given CV. Focus on skills, experience,
+#     education, and key achievements.
+#     Ensure to capture the candidate's professional summary, technical skills,
+#     work history, and educational background.
 
-reporting_task:
+
+#     CV file: {path_to_cv}
+#   expected_output: >
+#     A structured summary of the CV, including:
+#     - Professional Summary
+#     - Technical Skills
+#     - Work History
+#     - Education
+#     - Key Achievements
+
+# match_cv_task:
+#   description: >
+#     Match the CV to the job opportunities based on skills, experience, and key
+#     achievements.
+#     Evaluate how well the candidate's profile fits each job description,
+#     focusing on the alignment of skills, work history, and key achievements
+#     with the job requirements.
+
+
+#     Jobs CSV file: {path_to_jobs_csv}
+
+#     CV file: {path_to_cv}
+#   expected_output: >
+#     A ranked list of job opportunities that best match the CV, including:
+#     - Job Title
+#     - Match Score (based on skills and experience)
+#     - Key Matching Points
+
+cover_letter_task:
   description: >
-    Review the context you got and expand each topic into a full section for a report.
-    Make sure the report is detailed and contains any and all relevant information.
+    Generate a personalized cover letter for a job application in {position}.
+    Highlight the applicant's strengths and align them with the job requirements.
   expected_output: >
-    A fully fledged report with the main topics, each with a full section of information.
-    Formatted as markdown without '```'
-  agent: reporting_analyst
+    A compelling cover letter that captures the attention of hiring managers
+    and makes a strong case for the applicant.
+  agent: cover_letter_generator
+
+resume_task:
+  description: >
+    Generate a professional resume for the specific job posting for {position}.
+    Showcase the applicant's skills, experience, and qualifications.
+  expected_output: >
+    A polished resume tailored to the specific job requirements.
+  agent: resume_generator
+
+position_task:
+  description: >
+    Find relevant job listings in the field of {position}.
+    Identify the most promising job listings for applicants.
+  expected_output: >
+    A list of the top 10 job listings in the field of {position}.
+  agent: position_finder
+
+application_information_task:
+  description: >
+    Provide the applicant with a list of relevant job listings in the field of {position}.
+    Ensure the applicant has access to the best opportunities available.
+  expected_output: >
+    A curated list of job listings in the field of {position}.
+  agent: application_information_provider
