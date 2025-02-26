@@ -1,7 +1,9 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 
-from crewai_tools import CSVSearchTool, FileReadTool
+from job_application.tools.job_tool import JobTool
+
+
 
 @CrewBase
 class JobApplication():
@@ -53,11 +55,14 @@ class JobApplication():
 	# 				# process=Process.hierarchical, # In case you want to use that instead https://docs.crewai.com/how-to/Hierarchical/
 	# 		)
 
+
 	@agent
 	def position_finder(self) -> Agent:
 		return Agent(
 			config=self.agents_config['position_finder'],
-			verbose=True
+			tools=[JobTool.search_jobs],
+			verbose=True,
+			output_file='positions.csv'
 		)
 
 	@agent
@@ -97,6 +102,7 @@ class JobApplication():
 	def generate_cover_letter(self) -> Task:
 		return Task(
 			config=self.tasks_config['cover_letter_task'],
+			output_file='cover_letter.txt'
 		)
 
 	@task
